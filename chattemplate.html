@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>My chat page, dawg</title>
+<style type="text/css">
+body {
+
+  background-color: black;
+  color: red;
+  margin: 0;
+  passing: 0;
+}
+#console {
+  margin-bottom: 100px;
+
+}
+#input_area {
+  position: fixed;
+  bottom: 0;
+}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    var socket = new io.Socket();
+    socket.connect();
+    /*socket.on('connect', function(){ … })
+    socket.on('message', function(){ … })
+    socket.on('disconnect', function(){ … })*/
+    socket.on('message', function(data) {
+      $('#console ul').append('<li>' + data + '</li>');
+    });
+
+    $('#input_area #text').keypress(function(event) {
+      if(event.keyCode!=13) return;
+      var msg = $('#input_area #text').attr('value');
+      if (msg) {
+        socket.send(msg);
+        $('#input_area #text').attr('value', '');
+      }
+    });
+  });
+</script>
+</head>
+<body>
+
+
+<div id="console">
+<ul></ul>
+</div>
+
+<div id="input_area">
+    Input: <input type="text" id="text"/>
+</div>
+
+
+</body>
+
+</html>
+
