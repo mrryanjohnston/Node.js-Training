@@ -27,6 +27,7 @@ socket.on('connection', function(client){
 
   client.on('message', function(msg) {
     console.log('message received');
+    msg = msg.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     if(!username) {
         username = msg;
         client.send('Welcome, ' + username + '!');
