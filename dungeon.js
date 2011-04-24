@@ -4,6 +4,7 @@ var http = require("http"),
     io   = require("socket.io");
 
 var connections = [];
+var username;
 
 var server = http.createServer(function(request, response) {
     response.writeHead(200, {
@@ -26,42 +27,46 @@ socket.on('connection', function(client){
   console.log(client.sessionId + " has joined");
   connections.push(client.sessionId);
   var pos = connections.indexOf(client.sessionId);
-  connections[pos] = {x: 0, y: 0};
   //client.on('message', function(){ … })
   //client.on('disconnect', function(){ … })
   client.send('Welcome to THE DUNGEON!');
-
   client.on('message', function(msg) {
-    var action = 'test';
-    switch(msg) {
-        case "37": action  = "left";
-                   //Only decrease the x if the user is not already at (0, y)
-                   if (connections[pos].x!=0) {
-                       connections[pos].x-=1;
-                   }
-                 break;
-        case "40": action = "down";
-                   //Only decrease the y if the user is not already at (x, 0)
-                   if (connections[pos].y!=0) {
-                       connections[pos].y-=1;
-                   }
-                 break;
-        case "39": action = "right";
-                   //Only increase the x if the user is not already at (5,y)
-                   if (connections[pos].x!=5) {
-                       connections[pos].x+=1;
-                   }
-                 break;
-        case "38": action = "up";
-                   //Only increase the x if the user is not already at (5,y)
-                   if (connections[pos].y!=5) {
-                       connections[pos].y+=1;
-                   }
-                 break;
+    if (!username) {
+        connections[pos] = {name: msg, x: 0, y: 0};
+        username = msg;
+        console.log(client.sessionId + ' has chosen the name ' + username);
+    } else {
+        var action = 'test';
+        switch(msg) {
+            case "37": action  = "left";
+                       //Only decrease the x if the user is not already at (0, y)
+                       if (connections[pos].x!=0) {
+                           connections[pos].x-=1;
+                       }
+                     break;
+            case "40": action = "down";
+                       //Only decrease the y if the user is not already at (x, 0)
+                       if (connections[pos].y!=0) {
+                           connections[pos].y-=1;
+                       }
+                     break;
+            case "39": action = "right";
+                       //Only increase the x if the user is not already at (5,y)
+                       if (connections[pos].x!=5) {
+                           connections[pos].x+=1;
+                       }
+                     break;
+            case "38": action = "up";
+                       //Only increase the x if the user is not already at (5,y)
+                       if (connections[pos].y!=5) {
+                           connections[pos].y+=1;
+                       }
+                     break;
+        }
+        //action = action.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        console.log(client.sessionId + ' is at position ' + connections[pos].x + ', ' + connections[pos].y);
+        socket.broadcast(JSON.stringify(connections[pos]));
     }
-    //action = action.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    console.log(client.sessionId + ' is at position ' + connections[pos].x + ', ' + connections[pos].y);
-    socket.broadcast(JSON.stringify(connections[pos]));
   });
 
 });
