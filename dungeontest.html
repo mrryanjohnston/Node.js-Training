@@ -1,0 +1,75 @@
+<html>
+<head>
+<title>The Dungeon</title>
+<style type="text/css">
+body {
+
+  background-color: black;
+  color: red;
+  margin: 0;
+  passing: 0;
+}
+#wrapper {
+  margin: auto;
+  width: 800px;
+}
+#dungeon {
+}
+#dungeon * {
+  border: 1px solid white;
+  width: 20px;
+  height: 20px;
+}
+.currentspot {
+  background-color: white;
+}
+#console {
+
+}
+.floatleft {
+  float: left;
+}
+.clear {
+  clear: both;
+}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    var socket = new io.Socket();
+    socket.connect();
+    //alert('test');
+    /*socket.on('connect', function(){ … })
+    socket.on('message', function(){ … })
+    socket.on('disconnect', function(){ … })*/
+    socket.on('message', function(msg){
+      var position = $.parseJSON(msg);
+      //$("#console").append("#" + position.x + "and" + position.y);
+      $("#dungeon *").removeClass("currentspot");
+      $("#" + position.x + "and" + position.y).addClass("currentspot");
+    });
+
+    $(document).keypress(function(e) {
+      socket.send(e.keyCode);
+      //alert(e.keyCode);
+    });
+  });
+</script>
+</head>
+<body>
+<div id="wrapper">
+  <div id="dungeon">
+    <div id="0and5" class="floatleft"></div><div id="1and5" class="floatleft"></div><div id="2and5" class="floatleft"></div><div id="3and5" class="floatleft"></div><div id="4and5" class="floatleft"></div><div id="5and5" class="floatleft"></div>
+    <div id="0and4" class="floatleft clear"></div><div id="1and4" class="floatleft"></div><div id="2and4" class="floatleft"></div><div id="3and4" class="floatleft"></div><div id="4and4" class="floatleft"></div><div id="5and4" class="floatleft"></div>
+    <div id="0and3" class="floatleft clear"></div><div id="1and3" class="floatleft"></div><div id="2and3" class="floatleft"></div><div id="3and3" class="floatleft"></div><div id="4and3" class="floatleft"></div><div id="5and3" class="floatleft"></div>
+    <div id="0and2" class="floatleft clear"></div><div id="1and2" class="floatleft"></div><div id="2and2" class="floatleft"></div><div id="3and2" class="floatleft"></div><div id="4and2" class="floatleft"></div><div id="5and2" class="floatleft"></div>
+    <div id="0and1" class="floatleft clear"></div><div id="1and1" class="floatleft"></div><div id="2and1" class="floatleft"></div><div id="3and1" class="floatleft"></div><div id="4and1" class="floatleft"></div><div id="5and1" class="floatleft"></div>
+    <div id="0and0" class="floatleft clear"></div><div id="1and0" class="floatleft"></div><div id="2and0" class="floatleft"></div><div id="3and0" class="floatleft"></div><div id="4and0" class="floatleft"></div><div id="5and0" class="floatleft"></div>
+  </div>
+  <div id="console"></div>
+</div>
+</body>
+
+</html>
+
